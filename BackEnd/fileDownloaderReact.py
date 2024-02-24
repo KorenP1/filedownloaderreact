@@ -15,7 +15,7 @@ def full_index():
 # CHANGE THIS SECTION FOR STATUS FOR EACH PROJECT DEPLOYMENT
 @app.route('/status')
 def status():
-    if os.listdir('/FrontEnd/files') == 0:
+    if os.listdir('/FrontEnd/files') == 1:
         return 'EMPTY'
     return 'READY'
 
