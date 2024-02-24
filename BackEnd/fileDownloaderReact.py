@@ -1,5 +1,6 @@
 # Imports
 from flask import Flask, redirect
+import os
 
 app = Flask(__name__, static_folder='/FrontEnd')
 
@@ -9,7 +10,14 @@ def index():
 
 @app.route('/index.html')
 def full_index():
-    return redirect("/", code=301)
+    return redirect('/', code=301)
+
+# CHANGE THIS SECTION FOR STATUS FOR EACH PROJECT DEPLOYMENT
+@app.route('/status')
+def status():
+    if os.listdir('/FrontEnd/files') == 0:
+        return 'EMPTY'
+    return 'READY'
 
 @app.route('/<path:path>')
 def static_file(path):
