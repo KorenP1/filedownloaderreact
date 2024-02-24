@@ -21,7 +21,13 @@ def status():
 
 @app.route('/start')
 def start():
-    return 'Starting'
+    os.system('./start.sh & echo $! > /tmp/pid')
+    return 'Starting...'
+
+@app.route('/delete')
+def start():
+    os.system('kill -9 `cat /tmp/pid`')
+    return 'Deleting...'
 
 @app.route('/<path:path>')
 def static_file(path):

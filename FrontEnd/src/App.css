@@ -30,7 +30,7 @@ div .W {
 #progress {
     margin: auto;
     top: 70%;
-    width: 20%;
+    width: 30%;
     position: absolute;
     -ms-transform: translateX(-50%);
     transform: translateX(-50%);

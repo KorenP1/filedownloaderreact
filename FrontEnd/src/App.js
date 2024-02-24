@@ -1,8 +1,6 @@
 import './App.css'
-import { Button } from '@mui/material';
-import { DownloadRounded } from '@mui/icons-material';
-import { PlayCircleOutlineRounded } from '@mui/icons-material';
-import { LinearProgress } from '@mui/material'
+import { Button, LinearProgress } from '@mui/material';
+import { DownloadRounded, PlayCircleOutlineRounded, DeleteOutlineRounded } from '@mui/icons-material';
 
 const App = () => {
     return (
@@ -10,8 +8,9 @@ const App = () => {
             <h1>Noder</h1>
 
             <div className='buttons'>
+                <Button color='error' variant='contained' size='large' startIcon={<DeleteOutlineRounded />}>rm -rf /</Button>
                 <Button color='success' variant='contained' size='large' startIcon={<PlayCircleOutlineRounded />}>Start</Button>
-                <Button color='error' variant='contained' size='large' startIcon={<DownloadRounded />}>Download</Button>
+                <Button color='secondary' variant='contained' size='large' startIcon={<DownloadRounded />}>Download</Button>
             </div>
 
             <LinearProgress id='progress' color='secondary'></LinearProgress>
