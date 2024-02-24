@@ -19,6 +19,10 @@ def status():
         return 'EMPTY'
     return 'READY'
 
+@app.route('/start')
+def start():
+    return 'Starting'
+
 @app.route('/<path:path>')
 def static_file(path):
     return app.send_static_file(path)
