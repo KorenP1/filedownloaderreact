@@ -25,7 +25,7 @@ def start():
     return 'Starting...'
 
 @app.route('/delete')
-def start():
+def delete():
     os.system('kill -9 `cat /tmp/pid`')
     return 'Deleting...'
 
