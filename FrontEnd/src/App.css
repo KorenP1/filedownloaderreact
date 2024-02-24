@@ -1,0 +1,38 @@
+body {
+    background-color: rgb(16, 20, 24);
+    font-family: comic sans ms;
+    color: rgb(200, 140, 255);
+}
+
+h1 {
+    margin: auto;
+    text-align: center;
+}
+
+div .buttons {
+    margin: 0;
+    position: absolute;
+    top: 30%;
+    left: 50%;
+    -ms-transform: translateY(-50%);
+    transform: translateY(-50%);
+    -ms-transform: translateX(-50%);
+    transform: translateX(-50%);
+    text-align: center;
+}
+
+div .W {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+}
+
+#progress {
+    margin: auto;
+    top: 70%;
+    width: 20%;
+    position: absolute;
+    -ms-transform: translateX(-50%);
+    transform: translateX(-50%);
+    left: 50%;
+}
