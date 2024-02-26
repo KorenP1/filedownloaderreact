@@ -1,9 +1,9 @@
 FROM node:slim as builder
 COPY FrontEnd /FrontEnd
 WORKDIR /FrontEnd
-RUN npm ci
+RUN npm clean-install
 RUN npm run build
-FROM python:slim
+FROM python:slim as production
 COPY BackEnd /BackEnd
 COPY --from=builder /FrontEnd/build /FrontEnd
 RUN pip3 install -r /BackEnd/requirements.txt

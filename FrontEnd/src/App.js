@@ -1,23 +1,54 @@
 import './App.css'
-import { Button, LinearProgress } from '@mui/material';
-import { DownloadRounded, PlayCircleOutlineRounded, DeleteOutlineRounded } from '@mui/icons-material';
+import { Button, LinearProgress } from '@mui/material'
+import { DownloadRounded, PlayCircleOutlineRounded, DeleteOutlineRounded } from '@mui/icons-material'
+import { ToastContainer, toast } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 
-function start() {
-    alert('START')
-}
-
-function rmrf() {
-    alert('DELETE')
-}
-
-function download() {
-    alert('DOWNLOAD')
+async function fetchDataFromAPI(apiURI) {
+    try {
+        const response = await fetch(window.location.origin + apiURI);
+        const data = await response.text();
+        return data;
+    } catch (error) {
+        console.log(error);
+        return 'ERROR';
+    }
 }
 
 const App = () => {
+
+
+    const rmrf = async () => {
+        switch (await fetchDataFromAPI('/api/status')) {
+            case 'ERROR':
+                toast.error('Connection Error 🔌')
+                break
+            case 'EMPTY':
+                toast.success('There are no files 🤡')
+                break
+            case 'CREATING':
+                toast.success('Discarding creating task and deleting files 🗑️')
+                break
+            case 'DELETING':
+                toast.error('Already deleting files 🤯')
+                break
+            case 'READY':
+                toast.error('Deleting files 🗑️')
+                break
+        }
+    }
+    const start = async () => {
+        toast.success('Start')
+    }
+    const download = async () => {
+        toast.error('🦄 Wow so easy!');
+    }
+
     return (
         <>
             <h1>Noder</h1>
+
+            <ToastContainer theme='dark'/>
 
             <div className='buttons'>
                 <Button color='error' variant='contained' size='large' startIcon={<DeleteOutlineRounded />} onClick={rmrf}>rm -rf /</Button>

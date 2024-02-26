@@ -2,7 +2,7 @@
 from flask import Flask, redirect
 import os
 
-STATUS = 'READY'
+os.system('rm -f /FrontEnd/files/.gitkeep')
 
 app = Flask(__name__, static_folder='/FrontEnd')
 
@@ -16,17 +16,16 @@ def full_index():
 
 @app.route('/files')
 def files():
-    files = os.listdir('/FrontEnd/files')
-    files.remove('.gitkeep')
-    return files
+    return os.listdir('/FrontEnd/files')
 
 # CHANGE THIS SECTION FOR STATUS FOR EACH PROJECT DEPLOYMENT
 @app.route('/api/status')
 def status():
-    global STATUS
-    if os.path.exists('/tmp/pid'):
+    if len(os.listdir('/FrontEnd/files')) == 0 and not os.path.exists('/tmp/pid'):
+        STATUS =  'EMPTY'
+    elif os.path.exists('/tmp/pid'):
         STATUS = 'CREATING'
-    elif len(os.listdir('/FrontEnd/files')) > 1:
+    elif len(os.listdir('/FrontEnd/files')) > 0 and os.path.exists('/tmp/delete'):
         STATUS = 'DELETING'
     else:
         STATUS = 'READY'
@@ -34,16 +33,15 @@ def status():
 
 @app.route('/api/start')
 def start():
-    os.system('/BackEnd/start.sh & echo $! > /tmp/pid')
-    global STATUS
-    STATUS = 'CREATING'
+    os.system('cd /FrontEnd/files && /BackEnd/start.sh && rm -f /tmp/pid & echo $! > /tmp/pid')
     return 'Starting...'
 
 @app.route('/api/delete')
 def delete():
     os.system('kill -9 `cat /tmp/pid`')
     os.system('rm -f /tmp/pid')
-    os.system('rm -rf /FrontEnd/files/* &')
+    os.system('touch /tmp/delete')
+    os.system('rm -rf /FrontEnd/files/* && rm -f /tmp/delete &')
     return 'Deleting...'
 
 @app.route('/<path:path>')
