@@ -19,3 +19,5 @@ FrontEnd/.env.production.local
 FrontEnd/npm-debug.log*
 FrontEnd/yarn-debug.log*
 FrontEnd/yarn-error.log*
+
+FrontEnd/public/files/.gitkeep

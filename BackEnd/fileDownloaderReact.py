@@ -1,8 +1,9 @@
 # Imports
 from flask import Flask, redirect
-import os
-
-os.system('rm -f /FrontEnd/files/.gitkeep')
+from requests import get
+from os import listdir
+import os.path
+from subprocess import Popen, PIPE
 
 app = Flask(__name__, static_folder='/FrontEnd')
 
@@ -16,16 +17,16 @@ def full_index():
 
 @app.route('/files')
 def files():
-    return os.listdir('/FrontEnd/files')
+    return ' '.join(listdir('/FrontEnd/files'))
 
 # CHANGE THIS SECTION FOR STATUS FOR EACH PROJECT DEPLOYMENT
 @app.route('/api/status')
 def status():
-    if len(os.listdir('/FrontEnd/files')) == 0 and not os.path.exists('/tmp/pid'):
+    if len(listdir('/FrontEnd/files')) == 0 and not os.path.exists('/tmp/pid'):
         STATUS =  'EMPTY'
     elif os.path.exists('/tmp/pid'):
         STATUS = 'CREATING'
-    elif len(os.listdir('/FrontEnd/files')) > 0 and os.path.exists('/tmp/delete'):
+    elif len(listdir('/FrontEnd/files')) > 0 and os.path.exists('/tmp/delete'):
         STATUS = 'DELETING'
     else:
         STATUS = 'READY'
@@ -33,15 +34,19 @@ def status():
 
 @app.route('/api/start')
 def start():
-    os.system('cd /FrontEnd/files && /BackEnd/start.sh && rm -f /tmp/pid & echo $! > /tmp/pid')
+    if status() != 'EMPTY':
+        return 'Busy'
+    Popen('cd /FrontEnd/files && /BackEnd/start.sh && rm -f /tmp/pid & echo $! > /tmp/pid', shell=True, stdout=PIPE, stderr=PIPE)
     return 'Starting...'
 
 @app.route('/api/delete')
 def delete():
-    os.system('kill -9 `cat /tmp/pid`')
-    os.system('rm -f /tmp/pid')
-    os.system('touch /tmp/delete')
-    os.system('rm -rf /FrontEnd/files/* && rm -f /tmp/delete &')
+    if status() not in ['READY', 'CREATING']:
+        return 'Busy'
+    Popen('kill -9 `cat /tmp/pid`', shell=True, stdout=PIPE, stderr=PIPE)
+    Popen('rm -f /tmp/pid', shell=True, stdout=PIPE, stderr=PIPE)
+    Popen('touch /tmp/delete', shell=True, stdout=PIPE, stderr=PIPE)
+    Popen('rm -rf /FrontEnd/files/* && rm -f /tmp/delete &', shell=True, stdout=PIPE, stderr=PIPE)
     return 'Deleting...'
 
 @app.route('/<path:path>')
