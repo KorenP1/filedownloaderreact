@@ -16,32 +16,35 @@ const fetchDataFromAPI = async (apiURI) => {
     }
 }
 
-const fetchStatus = async () => {
-    let statusElement = document.getElementById('status')
+const fetchStatus = async (recursion) => {
     switch (await fetchDataFromAPI('/api/status')) {
         case 'ERROR':
-            toast.error('Connection Error 🔌')
+             toast.error('Connection Error 🔌')
             break
         case 'EMPTY':
-            statusElement.innerHTML = 'No Files 📁'
-            statusElement.style.color = 'white'
+            document.getElementById('progress').style.display = 'none'
+            document.getElementById('status').innerHTML = 'No Files 📁'
+            document.getElementById('status').style.color = 'white'
             break
         case 'CREATING':
-            statusElement.innerHTML = 'Creating Files ⌛'
-            statusElement.style.color = 'yellow'
+            document.getElementById('progress').style.display = 'block'
+            document.getElementById('status').innerHTML = 'Creating Files ⌛'
+            document.getElementById('status').style.color = 'yellow'
             break
         case 'DELETING':
-            statusElement.innerHTML = 'Deleting Files 🗑️'
-            statusElement.style.color = 'yellow'
+            document.getElementById('progress').style.display = 'block'
+            document.getElementById('status').innerHTML = 'Deleting Files 🗑️'
+            document.getElementById('status').style.color = 'yellow'
             break
         case 'READY':
-            statusElement.innerHTML = 'Files Are Ready ☄️'
-            statusElement.style.color = 'green'
+            document.getElementById('progress').style.display = 'none'
+            document.getElementById('status').innerHTML = 'Files Are Ready ☄️'
+            document.getElementById('status').style.color = 'green'
             break
         default:
             toast.error('Cannot Fetch Status 🔒🔒🔒')
     }
-    setTimeout(fetchStatus, 10000)
+    if (recursion) {setTimeout(() => {fetchStatus(true)}, 10000)}
 }
 
 const clearToastsEveryTenMinutes = async () => {
@@ -56,20 +59,24 @@ const rmrf = async () => {
             break
         case 'EMPTY':
             toast.info('There Are No Files 🤡')
+            fetchStatus()
             break
         case 'CREATING':
             toast.warn('Discarding Creation Task And Deleting Files 🗑️')
             await fetchDataFromAPI('/api/delete')
+            fetchStatus()
             break
         case 'DELETING':
             toast.info('Already Deleting Files 🤯')
+            fetchStatus()
             break
         case 'READY':
             toast.error('Deleting Files 🗑️')
             await fetchDataFromAPI('/api/delete')
+            fetchStatus()
             break
         default:
-            toast.error('UNKNOWN PROBLEM OCCURED 👽')
+            toast.error('Unknown Problem Occured 👽')
     }
 }
 const start = async () => {
@@ -80,18 +87,22 @@ const start = async () => {
         case 'EMPTY':
             toast.success('Creation Task Called ⏳')
             await fetchDataFromAPI('/api/start')
+            fetchStatus()
             break
         case 'CREATING':
             toast.info('Already Creating Files ⌛')
+            fetchStatus()
             break
         case 'DELETING':
             toast.info('Deletion Task Is Running 🗑️')
+            fetchStatus()
             break
         case 'READY':
             toast.info('Files Are Ready ✔️')
+            fetchStatus()
             break
         default:
-            toast.error('UNKNOWN PROBLEM OCCURED 👽')
+            toast.error('Unknown Problem Occured 👽')
     }
 }
 const download = async () => {
@@ -101,12 +112,15 @@ const download = async () => {
             break
         case 'EMPTY':
             toast.info('Can\'t Download, No Files ❄️')
+            fetchStatus()
             break
         case 'CREATING':
             toast.info('Files Are Creating 🔥')
+            fetchStatus()
             break
         case 'DELETING':
             toast.info('Deletion Task Is Running 🗑️')
+            fetchStatus()
             break
         case 'READY':
             toast.success('Downloading Files... 📁')
@@ -119,14 +133,15 @@ const download = async () => {
                 aTag.click()
                 aTag.remove()
             }
+            fetchStatus()
             break
         default:
-            toast.error('UNKNOWN PROBLEM OCCURED 👽')
+            toast.error('Unknown Problem Occured 👽')
     }
 }
 
 clearToastsEveryTenMinutes()
-fetchStatus()
+fetchStatus(true)
 
 export default function App() {
 
@@ -134,7 +149,7 @@ export default function App() {
         <>
             <h1>{process.env.REACT_APP_TITLE} ☄️</h1>
 
-            <ToastContainer theme='dark' newestOnTop='True' limit={20}/>
+            <ToastContainer theme='dark' newestOnTop='True' limit={50}/>
 
             <div className='buttons'>
                 <Button color='error' variant='contained' size='large' startIcon={<DeleteOutlineRounded />} onClick={rmrf}>rm -rf /</Button>
@@ -142,7 +157,7 @@ export default function App() {
                 <Button color='secondary' variant='contained' size='large' startIcon={<DownloadRounded />} onClick={download}>Download</Button>
             </div>
 
-            <div id='status'>Loading...</div>
+            <div id='status'>Loading... ⚓</div>
             <LinearProgress id='progress' color='secondary'></LinearProgress>
 
             <div className='W'>W :)</div>
