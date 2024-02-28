@@ -7,7 +7,7 @@ import 'react-toastify/dist/ReactToastify.css'
 async function fetchDataFromAPI(apiURI) {
     try {
         const response = await fetch(window.location.origin + apiURI);
-        if (response.status != 200) {return 'ERROR'}
+        if (response.status !== 200) {return 'ERROR'}
         const data = await response.text();
         return data;
     } catch (error) {
