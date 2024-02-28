@@ -1,6 +1,6 @@
 import './App.css'
 import { Button, LinearProgress } from '@mui/material'
-import { DownloadRounded, PlayCircleOutlineRounded, DeleteOutlineRounded } from '@mui/icons-material'
+import { DeleteOutlineRounded, PlayCircleOutlineRounded, DownloadRounded } from '@mui/icons-material'
 import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 
