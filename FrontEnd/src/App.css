@@ -40,3 +40,14 @@ div .W {
     transform: translateX(-50%);
     left: 50%;
 }
+
+#status {
+    color: white;
+    position: absolute;
+    width: 30%;
+    left: 50%;
+    -ms-transform: translateX(-50%);
+    transform: translateX(-50%);
+    text-align: center;
+    top: 67%;
+}
