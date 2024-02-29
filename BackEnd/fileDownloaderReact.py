@@ -47,7 +47,7 @@ def delete():
     if status() not in ['READY', 'CREATING']:
         return 'Busy'
     
-    Popen('kill -9 `cat /tmp/pid; rm -f /tmp/pid`', shell=True, stdout=PIPE, stderr=PIPE)
+    Popen('kill -9 `cat /tmp/pid`; rm -f /tmp/pid', shell=True, stdout=PIPE, stderr=PIPE)
     Popen('touch /tmp/delete && rm -rf /FrontEnd/files/* && rm -f /tmp/delete &', shell=True, stdout=PIPE, stderr=PIPE)
 
     return 'Deleting...'
