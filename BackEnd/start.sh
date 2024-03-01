@@ -1,4 +1,5 @@
 #!/bin/sh
 
-sleep 10
+sleep 5
+sleep 7
 echo X > X
