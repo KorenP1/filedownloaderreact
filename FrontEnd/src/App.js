@@ -17,7 +17,7 @@ const fetchDataFromAPI = async (apiURI) => {
 }
 
 const fetchStatus = async (count = 0, recursion = false) => {
-    if (count >= 60) {toast.error('Please Refresh Page 🔄'); setTimeout(() => {fetchStatus(++count)}, 10000); return}
+    if (count >= 60) {toast.error('Please Refresh Page 🔄'); setTimeout(() => {fetchStatus(++count)}, 10000); Array.from(document.getElementsByClassName('buttons')[0].children).forEach(button => {button.style.pointerEvents = 'none'}); return}
     switch (await fetchDataFromAPI('/api/status')) {
         case 'ERROR':
              toast.error('Connection Error 🔌')
