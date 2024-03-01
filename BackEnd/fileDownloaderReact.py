@@ -38,7 +38,7 @@ def start():
     if status() != 'EMPTY':
         return 'Busy'
     
-    Popen('/BackEnd/start.sh && rm -f /tmp/pid & echo $! > /tmp/pid', cwd='/FrontEnd/files', shell=True, stdout=PIPE)
+    Popen('/BackEnd/start.sh && rm -f /tmp/pid & echo $! > /tmp/pid', cwd='/FrontEnd/files', shell=True, stdout=PIPE, stderr=PIPE)
 
     return 'Starting...'
 
@@ -47,8 +47,8 @@ def delete():
     if status() not in ['READY', 'CREATING']:
         return 'Busy'
     
-    run('list_descendants() { local children=$(ps -o pid= --ppid "$1"); for pid in $children; do list_descendants "$pid"; echo $children; done }; kill $(list_descendants `cat /tmp/pid`); rm -f /tmp/pid', shell=True, stdout=PIPE)
-    Popen('touch /tmp/delete && rm -rf /FrontEnd/files/* && rm -f /tmp/delete &', shell=True, stdout=PIPE)
+    run('list_descendants() { local children=$(ps -o pid= --ppid "$1"); for pid in $children; do list_descendants "$pid"; echo $children; done }; kill $(list_descendants `cat /tmp/pid`); rm -f /tmp/pid', shell=True, stdout=PIPE, stderr=PIPE)
+    Popen('touch /tmp/delete && rm -rf /FrontEnd/files/* && rm -f /tmp/delete &', shell=True, stdout=PIPE, stderr=PIPE)
 
     return 'Deleting...'
 
