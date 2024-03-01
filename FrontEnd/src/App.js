@@ -16,7 +16,7 @@ const fetchDataFromAPI = async (apiURI) => {
     }
 }
 
-const fetchStatus = async (count = 9999999) => {
+const fetchStatus = async (count = 0, recursion = false) => {
     if (count >= 60) {toast.error('Please Refresh Page 🔄'); setTimeout(() => {fetchStatus(++count)}, 10000); return}
     switch (await fetchDataFromAPI('/api/status')) {
         case 'ERROR':
@@ -45,7 +45,7 @@ const fetchStatus = async (count = 9999999) => {
         default:
             toast.error('Cannot Fetch Status 🔒🔒🔒')
     }
-    setTimeout(() => {fetchStatus(++count)}, 10000)
+    if (recursion) {setTimeout(() => {fetchStatus(++count, true)}, 10000)}
 }
 
 const clearToastsEveryTenMinutes = async () => {
@@ -142,7 +142,7 @@ const download = async () => {
 }
 
 clearToastsEveryTenMinutes()
-fetchStatus(1)
+fetchStatus(1, true)
 
 export default function App() {
 

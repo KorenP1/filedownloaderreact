@@ -47,7 +47,7 @@ def delete():
     if status() not in ['READY', 'CREATING']:
         return 'Busy'
     
-    run('list_descendants() { local children=$(ps -o pid= --ppid "$1"); for pid in $children; do list_descendants "$pid"; echo $children; done }; kill $(list_descendants `cat /tmp/pid`); rm -f /tmp/pid', shell=True, stdout=PIPE, stderr=PIPE)
+    run('list_descendants() { local children=$(ps -o pid= --ppid "$1"); for pid in $children; do list_descendants "$pid"; echo $children; done }; kill -9 $(list_descendants `cat /tmp/pid`); rm -f /tmp/pid', shell=True, stdout=PIPE, stderr=PIPE)
     Popen('touch /tmp/delete && rm -rf /FrontEnd/files/* && rm -f /tmp/delete &', shell=True, stdout=PIPE, stderr=PIPE)
 
     return 'Deleting...'
