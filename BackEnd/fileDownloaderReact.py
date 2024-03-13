@@ -38,7 +38,7 @@ def start():
     if status() != 'EMPTY':
         return 'Busy'
     
-    Popen('/BackEnd/start.sh || rm -rf * && rm -f /tmp/pid & echo $! > /tmp/pid', cwd='/FrontEnd/files', shell=True, stdout=PIPE)
+    Popen('sh -e /BackEnd/start.sh || rm -rf * && rm -f /tmp/pid || rm -f /tmp/pid & echo $! > /tmp/pid', cwd='/FrontEnd/files', shell=True, stdout=PIPE)
 
     return 'Starting...'
 
@@ -47,7 +47,7 @@ def delete():
     if status() not in ['READY', 'CREATING']:
         return 'Busy'
     
-    run('[ -f /tmp/pid ] && kill -9 $(ps -o pid= --ppid `cat /tmp/pid`); rm -f /tmp/pid', shell=True, stdout=PIPE, stderr=PIPE)
+    run('[ -f /tmp/pid ] && kill -9 $((`cat /tmp/pid` + 1)) $(ps -o pid= --ppid $((`cat /tmp/pid` + 1))); rm -f /tmp/pid', shell=True, stdout=PIPE, stderr=PIPE)
     Popen('touch /tmp/delete && rm -rf /FrontEnd/files/* && rm -f /tmp/delete &', shell=True, stdout=PIPE, stderr=PIPE)
 
     return 'Deleting...'
