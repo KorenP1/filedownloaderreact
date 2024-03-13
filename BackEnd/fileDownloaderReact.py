@@ -1,11 +1,11 @@
 # Imports
 from flask import Flask, redirect
 from requests import get
-from os import listdir
+from os import listdir, getenv
 import os.path
 from subprocess import Popen, run, PIPE
 
-
+HOST = getenv('HOST', '0.0.0.0')
 
 app = Flask(__name__, static_folder='/FrontEnd')
 
@@ -38,7 +38,7 @@ def start():
     if status() != 'EMPTY':
         return 'Busy'
     
-    Popen('/BackEnd/start.sh && rm -f /tmp/pid & echo $! > /tmp/pid', cwd='/FrontEnd/files', shell=True, stdout=PIPE, stderr=PIPE)
+    Popen('/BackEnd/start.sh || rm -rf * && rm -f /tmp/pid & echo $! > /tmp/pid', cwd='/FrontEnd/files', shell=True, stdout=PIPE)
 
     return 'Starting...'
 
@@ -47,7 +47,7 @@ def delete():
     if status() not in ['READY', 'CREATING']:
         return 'Busy'
     
-    run('list_descendants() { local children=$(ps -o pid= --ppid "$1"); for pid in $children; do list_descendants "$pid"; echo $children; done }; kill -9 $(list_descendants `cat /tmp/pid`); rm -f /tmp/pid', shell=True, stdout=PIPE, stderr=PIPE)
+    run('[ -f /tmp/pid ] && kill -9 $(ps -o pid= --ppid `cat /tmp/pid`); rm -f /tmp/pid', shell=True, stdout=PIPE, stderr=PIPE)
     Popen('touch /tmp/delete && rm -rf /FrontEnd/files/* && rm -f /tmp/delete &', shell=True, stdout=PIPE, stderr=PIPE)
 
     return 'Deleting...'
@@ -57,7 +57,7 @@ def static_file(path):
     return app.send_static_file(path)
 
 def main():
-    app.run(host = '0.0.0.0', port = 8080)
+    app.run(host = HOST, port = 8080)
 
 if __name__ == '__main__':
     main()
